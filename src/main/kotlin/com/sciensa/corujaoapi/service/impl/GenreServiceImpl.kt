@@ -43,7 +43,11 @@ class GenreServiceImpl(private val repo: GenreRepository): GenreService {
     override fun updateGenre(genreId: String, genreBody: GenreDomain): GenreDomain? {
 
         if (repo.existsById(genreId)) {
-            return repo.save(genreBody)
+            val genre: Optional<GenreDomain> = repo.findById(genreId)
+
+            genre.get().description = genreBody.description
+
+            return repo.save(genre.get())
         }
 
         return null

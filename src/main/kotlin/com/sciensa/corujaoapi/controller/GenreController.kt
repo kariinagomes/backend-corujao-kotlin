@@ -50,10 +50,34 @@ class GenreController(private val service: GenreService) {
 
     }
 
+    @PutMapping(value = ["/genres/{genreId}"], consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun updateGenre(@PathVariable("genreId") genreId: String, @RequestBody genreBody: GenreDomain): ResponseEntity<GenreDomain> {
 
+        if (genreBody.description == "") {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+        }
 
-   /* fun getGenre(): ResponseEntity<GenreDomain> {
-        return null;
-    }*/
+        return try {
+            val genre = service.updateGenre(genreId, genreBody)
+
+            ResponseEntity.status(HttpStatus.OK).body(genre)
+        } catch (ex: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+
+    }
+
+    @GetMapping(value = ["/genres/{genreId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getGenre(@PathVariable("genreId") genreId: String): ResponseEntity<Optional<GenreDomain>> {
+
+        return try {
+            val genre = service.getGenre(genreId)
+
+            ResponseEntity.status(HttpStatus.OK).body(genre)
+        } catch (ex: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
+
+    }
 
 }
